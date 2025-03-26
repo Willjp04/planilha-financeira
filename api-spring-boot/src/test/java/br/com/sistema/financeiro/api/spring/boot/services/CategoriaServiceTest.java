@@ -9,8 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -45,7 +44,7 @@ public class CategoriaServiceTest {
         UUID id = UUID.randomUUID();
 
         when(categoriaRepository.existsById(id)).thenReturn(true);
-        categoriaService.excluirCategoriaPorId(id);
+        categoriaService.deletarCategoriaPorId(id);
 
         verify(categoriaRepository, times(1)).deleteById(id);
 
@@ -69,6 +68,59 @@ public class CategoriaServiceTest {
         assertEquals("cartao de credito", categoria.getNome());
         verify(categoriaRepository, times(1)).findById(id);
 
+
+    }
+
+    @Test
+    void testAtualizarCategoria() {
+        UUID id = UUID.randomUUID();
+        Categoria categoriaExistente = new Categoria();
+        categoriaExistente.setId(id);
+        categoriaExistente.setNome("cartao de credito");
+
+        Categoria categoriaAtualizada = new Categoria();
+        categoriaAtualizada.setNome("cartao de debito");
+
+
+        when(categoriaRepository.findById(id)).thenReturn(Optional.of(categoriaExistente));
+
+        when(categoriaRepository.save(any(Categoria.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+
+        // Act
+        Categoria resultado = categoriaService.atualizarCategoria(id, categoriaAtualizada);
+
+        assertNotNull(resultado);
+        assertEquals(id,resultado.getId());
+        assertEquals("cartao de debito",resultado.getNome());
+        verify(categoriaRepository, times(1)).findById(id);
+        verify(categoriaRepository, times(1)).save(any(Categoria.class));
+
+    }
+
+    @Test
+    void testListarCategorias(){
+
+        Categoria categoria = new Categoria();
+        categoria.setId(UUID.randomUUID());
+        categoria.setNome("cartao de credito");
+
+        Categoria categoria2 = new Categoria();
+        categoria2.setId(UUID.randomUUID());
+        categoria2.setNome("cartao de debito");
+
+
+        List<Categoria> categoriaLista = Arrays.asList(categoria,categoria2);
+
+        when(categoriaRepository.findAll()).thenReturn(categoriaLista);
+
+        List<Categoria> resultado = categoriaService.listarCategorias();
+
+        assertNotNull(resultado);
+        assertEquals(2,resultado.size());
+        assertEquals("cartao de credito",resultado.get(0).getNome());
+        assertEquals("cartao de debito",resultado.get(1).getNome());
+        verify(categoriaRepository, times(1)).findAll();
 
     }
 

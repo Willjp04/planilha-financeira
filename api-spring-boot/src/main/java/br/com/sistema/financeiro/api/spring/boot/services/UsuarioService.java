@@ -27,7 +27,14 @@ public class UsuarioService {
     }
 
     public Optional<Usuario> buscarUsuarioPorEmail(String email) {
-        return usuarioRepository.findByEmail(email);
+        Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(email);
+        if (usuarioExistente.isPresent()) {
+            return usuarioExistente;
+        }
+        else {
+            throw new RuntimeException("Usuário não encontrado");
+        }
+
     }
 
     public void deletarUsuarioPorId(UUID id) {

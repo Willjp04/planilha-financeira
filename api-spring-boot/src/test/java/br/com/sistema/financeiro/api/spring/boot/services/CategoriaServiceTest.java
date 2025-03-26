@@ -9,10 +9,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CategoriaServiceTest {
@@ -37,5 +39,15 @@ public class CategoriaServiceTest {
     }
 
 
+    @Test
+    void deletarCategoria() {
+        UUID id = UUID.randomUUID();
+
+        when(categoriaRepository.existsById(id)).thenReturn(true);
+        categoriaService.excluirCategoriaPorId(id);
+
+        verify(categoriaRepository, times(1)).deleteById(id);
+
+    }
 
 }

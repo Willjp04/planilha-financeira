@@ -29,7 +29,7 @@ public class CategoriaService {
     }
 
     // Método para atualizar uma categoria existente
-    public Categoria atualizar(UUID id, Categoria categoriaAtualizada) {
+    public Categoria atualizarCategoria(UUID id, Categoria categoriaAtualizada) {
         return categoriaRepository.findById(id)
                 .map(categoria -> {
                     categoria.setNome(categoriaAtualizada.getNome());
@@ -41,10 +41,16 @@ public class CategoriaService {
 
 
 
-    public void excluirCategoriaPorId(UUID id){
+    public void deletarCategoriaPorId(UUID id){
         if(!categoriaRepository.existsById(id)){
             throw new RuntimeException("Categoria não encontrada");
         }
         categoriaRepository.deleteById(id);
     }
+
+
+
+
+
+
 }

@@ -8,9 +8,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,6 +48,8 @@ public class UsuarioServiceTest {
     }
 
 
+
+
     @Test
     void testBuscarUsuarioPorEmail() {
         // Criando o usuário de teste
@@ -75,6 +76,8 @@ public class UsuarioServiceTest {
         verify(usuarioRepository, times(1)).findByEmail("willian@gmail.com");
     }
 
+
+
 @Test
     void testBuscarUsuarioPorEmailNaoEncontrado() {
     // Simulando o comportamento de não encontrar o usuário no repositório
@@ -89,6 +92,18 @@ public class UsuarioServiceTest {
     // Verifica se o repositório foi chamado uma vez
     verify(usuarioRepository, times(1)).findByEmail("naoencontrado@gmail.com");
 
+
+}
+
+@Test
+void testDeletarUsuarioPorId(){
+    UUID id = UUID.randomUUID();
+
+    when(usuarioRepository.existsById(id)).thenReturn(true);
+
+    usuarioService.deletarUsuarioPorId(id);
+
+    verify(usuarioRepository, times(1)).deleteById(id);
 
 }
 

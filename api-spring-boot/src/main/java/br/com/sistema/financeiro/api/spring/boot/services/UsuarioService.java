@@ -19,6 +19,10 @@ public class UsuarioService {
     }
 
     public Usuario criarUsuario(Usuario usuario) {
+        Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(usuario.getEmail());
+        if (usuarioExistente.isPresent()) {
+            throw new RuntimeException("E-mail já cadastrado");
+        }
         return usuarioRepository.save(usuario);
     }
 
@@ -33,6 +37,8 @@ public class UsuarioService {
         usuarioRepository.deleteById(id);
 
     }
+
+
 
 
 }

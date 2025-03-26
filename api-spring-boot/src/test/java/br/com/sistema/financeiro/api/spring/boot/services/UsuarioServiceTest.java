@@ -75,4 +75,21 @@ public class UsuarioServiceTest {
         verify(usuarioRepository, times(1)).findByEmail("willian@gmail.com");
     }
 
+@Test
+    void testBuscarUsuarioPorEmailNaoEncontrado() {
+    // Simulando o comportamento de não encontrar o usuário no repositório
+    when(usuarioRepository.findByEmail("naoencontrado@gmail.com")).thenReturn(Optional.empty());
+
+    // Chamando o metodo
+    Optional<Usuario> resultadoOptional = usuarioService.buscarUsuarioPorEmail("naoencontrado@gmail.com");
+
+    // Verificando se o Optional está vazio
+    assertFalse(resultadoOptional.isPresent());
+
+    // Verifica se o repositório foi chamado uma vez
+    verify(usuarioRepository, times(1)).findByEmail("naoencontrado@gmail.com");
+
+
+}
+
 }

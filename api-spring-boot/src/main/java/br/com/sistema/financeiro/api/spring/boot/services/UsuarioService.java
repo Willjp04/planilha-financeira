@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UsuarioService {
@@ -25,8 +26,12 @@ public class UsuarioService {
         return usuarioRepository.findByEmail(email);
     }
 
-    public void deletarUsuario(Usuario usuario) {
-        usuarioRepository.delete(usuario);
+    public void deletarUsuarioPorId(UUID id) {
+        if(!usuarioRepository.existsById(id)) {
+            throw new RuntimeException("Usuário não encontrado!");
+        }
+        usuarioRepository.deleteById(id);
+
     }
 
 

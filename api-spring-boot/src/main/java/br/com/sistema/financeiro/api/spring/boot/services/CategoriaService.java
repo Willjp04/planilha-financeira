@@ -41,7 +41,10 @@ public class CategoriaService {
 
 
 
-    public void excluirCategoria(Categoria categoria){
-        categoriaRepository.delete(categoria);
+    public void excluirCategoriaPorId(UUID id){
+        if(!categoriaRepository.existsById(id)){
+            throw new RuntimeException("Categoria não encontrada");
+        }
+        categoriaRepository.deleteById(id);
     }
 }

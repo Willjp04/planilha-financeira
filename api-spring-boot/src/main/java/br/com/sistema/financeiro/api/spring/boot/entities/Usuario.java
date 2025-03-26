@@ -13,7 +13,7 @@ import java.util.UUID;
 
 
 @Entity
-@Table(name = "Usuario")
+@Table(name = "USUARIO")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,10 +21,11 @@ import java.util.UUID;
 public class Usuario {
 
     @Id
+    @GeneratedValue(generator = "UUID")
     private UUID id;
     @Column(nullable = false)
     private String nome;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
     @Column(nullable = false)
     private String senha;

@@ -6,16 +6,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.antlr.v4.runtime.misc.NotNull;
+
 
 import java.util.UUID;
 
+
+
 @Entity
 @Table(name = "Usuario")
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Usuario {
 
     @Id
@@ -26,4 +28,6 @@ public class Usuario {
     private String email;
     @Column(nullable = false)
     private String senha;
+
+
 }

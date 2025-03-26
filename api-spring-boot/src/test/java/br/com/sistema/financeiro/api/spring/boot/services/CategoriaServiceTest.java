@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,6 +48,27 @@ public class CategoriaServiceTest {
         categoriaService.excluirCategoriaPorId(id);
 
         verify(categoriaRepository, times(1)).deleteById(id);
+
+    }
+
+    @Test
+    void buscarCategoriaPorId() {
+
+        Categoria categoria = new Categoria();
+        UUID id = UUID.randomUUID();
+        categoria.setId(id);
+        categoria.setNome("cartao de credito");
+
+
+        // Simulando o comportamento do findById no repositório
+        when(categoriaRepository.findById(id)).thenReturn(Optional.of(categoria));
+
+        Optional<Categoria> resultado = categoriaService.buscarCategoriaPorId(id);
+
+        assertNotNull(resultado);
+        assertEquals("cartao de credito", categoria.getNome());
+        verify(categoriaRepository, times(1)).findById(id);
+
 
     }
 

@@ -32,7 +32,7 @@ public class CategoriaServiceTest {
 
         when(categoriaRepository.save(any(Categoria.class))).thenReturn(categoria);
 
-        Categoria resultado = categoriaService.salvarCategoria(categoria);
+        Categoria resultado = categoriaService.criarCategoria(categoria);
 
         assertNotNull(resultado);
         assertEquals("cartão de credito", categoria.getNome());

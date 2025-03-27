@@ -24,9 +24,21 @@ public class CategoriaService {
         return categoriaRepository.findById(id);
     }
 
-    public Categoria salvarCategoria(Categoria categoria){
+    public List<Categoria> buscarCategoriaPorNome(String nome){
+
+        List <Categoria> categorias = categoriaRepository.findByNomeIgnoreCase(nome);
+        if(categorias.isEmpty()){
+            throw new RuntimeException ("Categoria não encontrada com o nome " + nome);
+        }
+        return categoriaRepository.findByNomeIgnoreCase(nome);
+    }
+
+
+    public Categoria criarCategoria(Categoria categoria){
         return categoriaRepository.save(categoria);
     }
+
+
 
     // Método para atualizar uma categoria existente
     public Categoria atualizarCategoria(UUID id, Categoria categoriaAtualizada) {

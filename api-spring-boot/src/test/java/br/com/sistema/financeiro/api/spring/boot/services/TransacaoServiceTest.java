@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -72,6 +73,56 @@ public class TransacaoServiceTest {
 
 
 
+
+    }
+
+    @Test
+    void testAtualizarTransacao(){
+
+        Categoria categoria = new Categoria();
+        UUID uuid = UUID.randomUUID();
+        categoria.setId(uuid);
+        categoria.setNome("Cartão");
+
+
+        Usuario usuario = new Usuario();
+        usuario.setId(uuid);
+        usuario.setNome("Willian");
+
+
+
+
+        UUID id = UUID.randomUUID();
+        Transacao transacao = new Transacao();
+        transacao.setId(id);
+        transacao.setDescricao("Parcela da Entrada do Apartamento");
+        transacao.setValor(new BigDecimal("980.00"));
+        transacao.setData(LocalDate.now());
+        transacao.setTipo(TipoTransacao.DESPESA);
+        transacao.setCategoria(categoria);
+        transacao.setUsuario(usuario);
+
+
+Transacao transacaoAtualizada = new Transacao();
+        transacaoAtualizada.setId(id);
+        transacao.setDescricao("Parcela da Entrada do Apartamento ATUALIZADO");
+        transacao.setValor(new BigDecimal("990.00"));
+        transacao.setData(LocalDate.now());
+        transacao.setTipo(TipoTransacao.DESPESA);
+        transacao.setCategoria(categoria);
+        transacao.setUsuario(usuario);
+
+        when(transacaoRepository.findById(id)).thenReturn(Optional.of(transacaoAtualizada));
+        when(transacaoRepository.save(any(Transacao.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Transacao resultado = transacaoService.atualizarTransacao(id, transacao);
+
+        assertNotNull(resultado);
+        assertEquals(id, resultado.getId());
+        assertEquals("Parcela da Entrada do Apartamento ATUALIZADO", resultado.getDescricao());
+        assertEquals("990.00", resultado.getValor().toString());
+        verify(transacaoRepository,times(1)).save(any(Transacao.class));
+        verify(transacaoRepository,times(1)).findById(id);
 
     }
 

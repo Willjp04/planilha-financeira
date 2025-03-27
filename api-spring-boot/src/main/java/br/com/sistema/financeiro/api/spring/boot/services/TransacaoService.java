@@ -39,4 +39,12 @@ public class TransacaoService {
 
 
     }
+
+    public void deletarTransacao(UUID id) {
+        if(!transacaoRepository.existsById(id)) {
+            throw new RuntimeException("Transação não encontrada para o id " + id);
+        }
+        transacaoRepository.deleteById(id);
+
+    }
 }

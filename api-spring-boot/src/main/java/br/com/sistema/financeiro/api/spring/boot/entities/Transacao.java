@@ -20,20 +20,21 @@ import java.util.UUID;
 @Setter
 public class Transacao {
     @Id
+    @GeneratedValue(generator = "UUID")
     private UUID id;
 
     private String descricao;
 
+    @Column(nullable = false)
     private BigDecimal valor;
 
-    private LocalDate date;
+    private LocalDate data;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TipoTransacao tipo;
 
     @ManyToOne
-
     @JoinColumn(name = "CATEGORIA_ID")
     private Categoria categoria;
 

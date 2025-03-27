@@ -127,4 +127,15 @@ Transacao transacaoAtualizada = new Transacao();
     }
 
 
+    @Test
+    void testDeletarTransacao(){
+        UUID uuid = UUID.randomUUID();
+
+        when(transacaoRepository.existsById(uuid)).thenReturn(true);
+        transacaoService.deletarTransacao(uuid);
+        verify(transacaoRepository,times(1)).deleteById(uuid);
+
+    }
+
+
 }

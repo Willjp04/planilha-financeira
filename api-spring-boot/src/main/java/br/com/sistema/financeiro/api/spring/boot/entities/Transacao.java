@@ -28,6 +28,7 @@ public class Transacao {
     @Column(nullable = false)
     private BigDecimal valor;
 
+    @Column(nullable = false)
     private LocalDate data;
 
     @Column(nullable = false)

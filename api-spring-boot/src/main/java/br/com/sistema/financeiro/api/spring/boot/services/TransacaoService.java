@@ -47,4 +47,8 @@ public class TransacaoService {
         transacaoRepository.deleteById(id);
 
     }
+
+    public List<Transacao> listarTransacoes() {
+        return transacaoRepository.findAll();
+    }
 }

@@ -5,6 +5,7 @@ import br.com.sistema.financeiro.api.spring.boot.entities.Transacao;
 import br.com.sistema.financeiro.api.spring.boot.entities.Usuario;
 import br.com.sistema.financeiro.api.spring.boot.enums.TipoTransacao;
 import br.com.sistema.financeiro.api.spring.boot.repositories.TransacaoRepository;
+import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,6 +14,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -134,6 +137,56 @@ Transacao transacaoAtualizada = new Transacao();
         when(transacaoRepository.existsById(uuid)).thenReturn(true);
         transacaoService.deletarTransacao(uuid);
         verify(transacaoRepository,times(1)).deleteById(uuid);
+
+    }
+
+    @Test
+    void listarTransacoes(){
+
+
+        Categoria categoria = new Categoria();
+        UUID uuid = UUID.randomUUID();
+        categoria.setId(uuid);
+        categoria.setNome("Cartão");
+
+
+        Usuario usuario = new Usuario();
+        usuario.setId(uuid);
+        usuario.setNome("Willian");
+
+
+
+
+        Transacao transacao = new Transacao();
+        transacao.setId(UUID.randomUUID());
+        transacao.setDescricao("Fatura do Cartão de Crédito XP");
+        transacao.setValor(new BigDecimal("780.00"));
+        transacao.setData(LocalDate.now());
+        transacao.setTipo(TipoTransacao.DESPESA);
+        transacao.setCategoria(categoria);
+        transacao.setUsuario(usuario);
+
+
+        Transacao transacao2 = new Transacao();
+        transacao2.setId(UUID.randomUUID());
+        transacao2.setDescricao("Salário Fujitsu");
+        transacao2.setValor(new BigDecimal("3850.00"));
+        transacao2.setData(LocalDate.now());
+        transacao2.setTipo(TipoTransacao.RECEITA);
+        transacao2.setCategoria(categoria);
+        transacao2.setUsuario(usuario);
+
+        List<Transacao>  listarTransacoes = Arrays.asList(transacao, transacao2);
+        when(transacaoRepository.findAll()).thenReturn(listarTransacoes);
+
+        List<Transacao> resultado = transacaoService.listarTransacoes();
+
+        assertNotNull(resultado);
+        assertEquals(listarTransacoes.size(), resultado.size());
+        verify(transacaoRepository,times(1)).findAll();
+
+
+
 
     }
 

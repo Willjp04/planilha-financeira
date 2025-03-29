@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -36,7 +37,7 @@ public class CategoriaController {
     }
 
     @GetMapping("/listarPorNome")
-    public List<Categoria> buscarCategoriasPorNome(@RequestParam String nome) {
+    public Optional<Categoria> buscarCategoriasPorNome(@RequestParam String nome) {
         return categoriaService.buscarCategoriaPorNome(nome);
     }
 

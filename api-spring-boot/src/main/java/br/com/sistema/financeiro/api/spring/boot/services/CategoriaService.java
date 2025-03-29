@@ -24,9 +24,9 @@ public class CategoriaService {
         return categoriaRepository.findById(id);
     }
 
-    public List<Categoria> buscarCategoriaPorNome(String nome){
+    public Optional<Categoria> buscarCategoriaPorNome(String nome){
 
-        List <Categoria> categorias = categoriaRepository.findByNomeIgnoreCase(nome);
+        Optional <Categoria> categorias = categoriaRepository.findByNomeIgnoreCase(nome);
         if(categorias.isEmpty()){
             throw new RuntimeException ("Categoria não encontrada com o nome " + nome);
         }

@@ -4,7 +4,9 @@ import br.com.sistema.financeiro.api.spring.boot.entities.Categoria;
 import br.com.sistema.financeiro.api.spring.boot.entities.Transacao;
 import br.com.sistema.financeiro.api.spring.boot.entities.Usuario;
 import br.com.sistema.financeiro.api.spring.boot.enums.TipoTransacao;
+import br.com.sistema.financeiro.api.spring.boot.repositories.CategoriaRepository;
 import br.com.sistema.financeiro.api.spring.boot.repositories.TransacaoRepository;
+import br.com.sistema.financeiro.api.spring.boot.repositories.UsuarioRepository;
 import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,47 +39,63 @@ public class TransacaoServiceTest {
     @Mock
     private TransacaoRepository transacaoRepository;
 
+    @Mock
+    private CategoriaRepository categoriaRepository;
+
+
+    @Mock
+    private UsuarioRepository usuarioRepository;
+
     @Test
     void testCriarTransacao() {
-
+        // Criando Categoria Mockada
         Categoria categoria = new Categoria();
-        UUID uuid = UUID.randomUUID();
-        categoria.setId(uuid);
+        categoria.setId(UUID.randomUUID());
         categoria.setNome("Cartão");
 
+        // Criando Usuário Mockado
         Usuario usuario = new Usuario();
-        usuario.setId(uuid);
+        usuario.setId(UUID.randomUUID());
         usuario.setNome("Willian");
+        usuario.setEmail("willian@email.com");
 
-
-
+        // Criando a Transação (sem categoria e usuário, pois serão buscados no método)
         Transacao transacao = new Transacao();
         transacao.setDescricao("Fatura do Cartão de Crédito XP");
         transacao.setValor(new BigDecimal("780.00"));
-        transacao.setData(LocalDate.now());
+        transacao.setData(LocalDate.of(2024, 3, 28)); // Definir data fixa evita falhas na comparação
         transacao.setTipo(TipoTransacao.DESPESA);
-        transacao.setCategoria(categoria);
-        transacao.setUsuario(usuario);
 
+        // Mockando comportamento dos Repositórios
+        when(categoriaRepository.findByNomeIgnoreCase("Cartão")).thenReturn(Optional.of(categoria));
+        when(usuarioRepository.findByEmail("willian@email.com")).thenReturn(Optional.of(usuario));
+        when(transacaoRepository.save(any(Transacao.class))).thenAnswer(invocation -> {
+            Transacao t = invocation.getArgument(0);
+            t.setId(UUID.randomUUID()); // Simula a geração do ID
+            return t;
+        });
 
-        when(transacaoRepository.save(any(Transacao.class))).thenReturn(transacao);
+        // Chamando o método corrigido com os 3 argumentos
+        Transacao resultado = transacaoService.salvarTransacao(transacao, "Cartão", "willian@email.com");
 
-        Transacao resultado = transacaoService.salvarTransacao(transacao);
-
+        // Verificações
         assertNotNull(resultado);
+        assertNotNull(resultado.getId()); // Garante que o ID foi gerado
         assertEquals("Fatura do Cartão de Crédito XP", resultado.getDescricao());
-        assertEquals("780.00", resultado.getValor().toString());
-        assertEquals(LocalDate.now(), resultado.getData());
+        assertEquals(0, new BigDecimal("780.00").compareTo(resultado.getValor())); // Comparação correta de BigDecimal
+        assertEquals(LocalDate.of(2024, 3, 28), resultado.getData());
         assertEquals(TipoTransacao.DESPESA, resultado.getTipo());
         assertEquals(categoria, resultado.getCategoria());
         assertEquals(usuario, resultado.getUsuario());
-        verify(transacaoRepository,times(1)).save(any(Transacao.class));
 
-
-
-
-
+        // Verifica se os métodos foram chamados corretamente
+        verify(categoriaRepository, times(1)).findByNomeIgnoreCase("Cartão");
+        verify(usuarioRepository, times(1)).findByEmail("willian@email.com");
+        verify(transacaoRepository, times(1)).save(any(Transacao.class));
     }
+
+
+
 
     @Test
     void testAtualizarTransacao(){

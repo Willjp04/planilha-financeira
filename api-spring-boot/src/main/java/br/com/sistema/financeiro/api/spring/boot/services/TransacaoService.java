@@ -1,7 +1,11 @@
 package br.com.sistema.financeiro.api.spring.boot.services;
 
+import br.com.sistema.financeiro.api.spring.boot.entities.Categoria;
 import br.com.sistema.financeiro.api.spring.boot.entities.Transacao;
+import br.com.sistema.financeiro.api.spring.boot.entities.Usuario;
+import br.com.sistema.financeiro.api.spring.boot.repositories.CategoriaRepository;
 import br.com.sistema.financeiro.api.spring.boot.repositories.TransacaoRepository;
+import br.com.sistema.financeiro.api.spring.boot.repositories.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.ExpressionException;
@@ -16,12 +20,30 @@ public class TransacaoService {
 
     @Autowired
     private TransacaoRepository transacaoRepository;
+    @Autowired
+    private CategoriaRepository categoriaRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
 
     @Transactional
-    public Transacao salvarTransacao(Transacao transacao) {
+    public Transacao salvarTransacao(Transacao transacao, String nomeCategoria, String emailUsuario) {
+        // Buscar a categoria pelo nome
+        Categoria categoria = categoriaRepository.findByNomeIgnoreCase(nomeCategoria)
+                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
+
+        // Buscar o usuário pelo e-mail
+        Usuario usuario = usuarioRepository.findByEmail(emailUsuario)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        // Associa a categoria e o usuário à transação
+        transacao.setCategoria(categoria);
+        transacao.setUsuario(usuario);
+
+        // Salva a transação
         return transacaoRepository.save(transacao);
     }
+
 
     public Transacao atualizarTransacao(UUID id, Transacao transacaoAtualizada) {
         return transacaoRepository.findById(id).map(transacao ->

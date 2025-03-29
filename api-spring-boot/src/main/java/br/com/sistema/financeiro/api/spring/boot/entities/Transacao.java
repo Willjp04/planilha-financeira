@@ -44,4 +44,18 @@ public class Transacao {
     private Usuario usuario;
 
 
+
+
+
+
+
+
+
+    public Transacao(String descricao, BigDecimal valor, LocalDate data, TipoTransacao tipoTransacao) {
+        this.descricao = descricao;
+        this.valor = valor;
+        this.data = data;
+        this.tipo = tipoTransacao;
+
+    }
 }
